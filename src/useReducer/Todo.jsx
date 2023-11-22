@@ -12,6 +12,22 @@ const Todo = () => {
           alert:true
         }
       }
+      if (action.type === 'RESET') {
+        return {
+          ...state,
+          alert: false,
+          message:''
+        }
+      }
+
+      if (action.type === 'ADD_TODO') {
+        return {
+          ...state,
+          alert: true,
+          message: 'Todo added successfully',
+          todos: [...state.todos,action.payload]
+        }
+      }
 
       return state;
     }
@@ -26,7 +42,14 @@ const Todo = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const handleClick = (e) => {
       e.preventDefault();
-      dispatch({ type:'EMPTY'})
+      if (!name) { 
+        dispatch({ type:'EMPTY'})
+      } else {
+        dispatch({ type: 'ADD_TODO', payload: name });
+      }
+      setTimeout(() => {
+        dispatch({type:'RESET'})
+      }, 3000);
     }
   return (
     <>
@@ -39,6 +62,9 @@ const Todo = () => {
                 Add Todo
             </button>
         </form>
+      {state.todos.map((todo,index) => {
+        return <h1 key={index}>{todo}</h1>
+        })}
     </>
   )
 }
